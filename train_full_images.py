@@ -16,6 +16,7 @@ import time
 import os
 import copy
 
+
 cudnn.benchmark = True
 
 import pandas as pd
@@ -37,12 +38,33 @@ from datetime import datetime
 
 
 if __name__=='__main__':
-    a_file = open("../../Data/PACS.pkl", "rb")
-    full_dict = pickle.load(a_file)
+    data_root = "../../Data/PACS/"
+
 
     all_domain_names = ['photo', 'art_painting', 'cartoon', 'sketch']
     domain_names = ['photo', 'art_painting', 'cartoon']
-        
+
+    # means and standard deviations ImageNet because the network is pretrained
+    means, stds = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
+
+    # Define transforms to apply to each image
+    transf = transforms.Compose([ #transforms.Resize(227),      # Resizes short size of the PIL image to 256
+                                transforms.CenterCrop(224),  # Crops a central square patch of the image 224 because torchvision's AlexNet needs a 224x224 input!
+                                transforms.ToTensor(), # Turn PIL Image to torch.Tensor
+                                transforms.Normalize(means,stds) # Normalizes tensor with mean and standard deviation
+    ])
+
+    datasets = {}
+
+    for name in os.listdir(data_root):
+    
+        if not name[0] == '.':
+            dataset = torchvision.datasets.ImageFolder(data_root+name, transform=transf)
+
+            datasets[name] = dataset
+            print(f"Added :{name}, length: {len(datasets[name])}")
+    
+    # print(dict(Counter(dataset.targets)))
     num_classes = 7      # 7 classes for each domain: 'dog', 'elephant', 'giraffe', 'guitar', 'horse', 'house', 'person'
     classes_names = ['Dog', 'Elephant', 'Giraffe', 'Guitar', 'Horse', 'House', 'Person']
     domain_mapping = {'photo':0, 'art_painting':1, 'cartoon':2, 'sketch':3}
@@ -64,27 +86,27 @@ if __name__=='__main__':
     for gamma in [2.5]:
         print('Lambda: ', gamma)
         for i in range(20):
-            wandb.init(project="test-one",
-                        entity="skohnie",
-                        name=f'{gamma}/{i}',
-                        config = {"learning_rate": lr,
-                                    "epochs": 100,
-                                    "batch_size": 128,
-                                    "gamma": gamma,
-                                    "Train names": train_names,
-                                    "Valid name": valid_name,
-                                    "Test name": test_name
-                                    }
-                    )
+            # wandb.init(project="test-one",
+            #             entity="skohnie",
+            #             name=f'{gamma}/{i}',
+            #             config = {"learning_rate": lr,
+            #                         "epochs": 100,
+            #                         "batch_size": 128,
+            #                         "gamma": gamma,
+            #                         "Train names": train_names,
+            #                         "Valid name": valid_name,
+            #                         "Test name": test_name
+            #                         }
+            #         )
 
 
 
-            train_loader, valid_loader, test_loader  = torchy.get_feature_loaders(full_dict, 
+            train_loader, valid_loader, test_loader  = torchy.get_image_loaders(datasets, 
                                                                                 batch_size,
                                                                                 train_names,
                                                                                 valid_name,
                                                                                 test_name,
-                                                                                verbose=False)
+                                                                                verbose=True)
 
 
             net = torchy.Net()

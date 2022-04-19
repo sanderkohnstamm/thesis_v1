@@ -106,11 +106,12 @@ def get_feature_loaders(data_dict, batch_size, train_names, valid_name=None, tes
 
 
 
-def get_image_loaders(datasets, batch_size, train_names, hsic_name=None, valid_name=None, test_name=None, verbose=True):
+def get_image_loaders(datasets, batch_size, train_names, valid_name=None, test_name=None, verbose=True):
     
     
-    dataset = torch.utils.data.ConcatDataset([datasets[d] for d in train_names])
-
+    data, l = func.bootstrap(datasets, train_names)
+    dataset = torchy.Dataset(data, l)
+    if verbose: print(f'Training on {train_names}')
     # Get validation
     if valid_name=='split':
         if verbose: print('Validation on trainingset split')
@@ -119,7 +120,8 @@ def get_image_loaders(datasets, batch_size, train_names, hsic_name=None, valid_n
     elif valid_name:
         if verbose: print(f'Validation on {valid_name}')
         train = dataset
-        val = datasets[valid_name]
+        data, l = func.bootstrap(datasets, valid_name)
+        val = torchy.Dataset(data, l)
     else:
         if verbose: print('No validation')
         val =  None
@@ -132,23 +134,16 @@ def get_image_loaders(datasets, batch_size, train_names, hsic_name=None, valid_n
         val, test = random_split(val, [math.floor(r*len(val)), math.ceil((1-r)*len(val))])
     elif test_name:
         if verbose: print(f'Testing on {test_name}')
-        test = datasets[test_name]
+        data, l = func.bootstrap(datasets, test_name)
+        test = torchy.Dataset(data, l)
     else:
         if verbose: print('No testing')
         test =  None
         train = dataset
     
-    #Get HSIC Domain
-    if hsic_name:
-        if verbose: print(f'HSIC domains:{train_names[0], hsic_name}')
-        hsic = datasets[hsic_name]
-    else:
-        if verbose: print(f'Training on {train_names}, no HSIC')
-        hsic = None
-
-    datasets = [train, val, test, hsic]
-    train_loader, valid_loader, test_loader, HSIC_loader = [DataLoader(d, batch_size=batch_size, shuffle=True, num_workers=0) if d else d for d in datasets]
+    datasets = [train, val, test]
+    train_loader, valid_loader, test_loader = [DataLoader(d, batch_size=batch_size, shuffle=True, num_workers=0) if d else d for d in datasets]
 
 
 
-    return train_loader, valid_loader, test_loader, HSIC_loader
+    return train_loader, valid_loader, test_loader

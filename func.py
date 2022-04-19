@@ -1,11 +1,44 @@
 import torch
 import torchy
+from torch.utils.data import Subset, ConcatDataset
 import HSIC
+from collections import Counter
+
 import numpy as np
 import wandb
 from torch.utils.tensorboard import SummaryWriter
 
 
+def bootstrap(datasets, domain_names):
+    data_list = []
+
+    classes = set(datasets[domain_names[0]].targets)
+    num_classes = len(set(datasets[domain_names[0]].targets))
+    sizes = np.zeros((len(domain_names), num_classes))
+
+    for i, domain_key in enumerate(domain_names):
+        for j, class_size in enumerate(list(Counter(datasets[domain_key].targets).values())):
+            sizes[i,j] = class_size  
+    
+    max_sizes = np.max(sizes, axis=0).astype(int)
+    labels = torch.from_numpy(np.repeat(np.arange(num_classes), max_sizes))
+
+    for d in domain_names:
+        domain_list = []
+        domain_targets = np.array(datasets[d].targets)
+        for j, class_key in enumerate(classes):
+            bools = domain_targets==class_key
+            idx = np.cumsum(np.ones(domain_targets.shape[0]))[bools]-1
+            data_subset = Subset(datasets[d], idx)
+            if len(data_subset) == max_sizes[j]:
+                domain_list.append(data_subset)
+            else:
+                sampled_idx = np.random.choice(idx, size=max_sizes[j])
+                domain_list.append(Subset(data_subset, sampled_idx))
+
+        data_list.append(ConcatDataset(domain_list))
+        
+    return data_list, labels        
 
 def dict_to_data(feature_dict, domain_names):
     data_list = []
@@ -18,7 +51,7 @@ def dict_to_data(feature_dict, domain_names):
             sizes[i,j] =  len(feature_dict[domain_key][class_key])            
     
     max_sizes = np.max(sizes, axis=0).astype(int)
-    labels = torch.from_numpy(np.repeat(np.arange(num_classes), np.max(sizes, axis=0).astype(int)))
+    labels = torch.from_numpy(np.repeat(np.arange(num_classes), max_sizes))
     
     for i, domain_key in enumerate(domain_names):
         domain_list = []
