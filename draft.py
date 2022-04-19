@@ -20,3 +20,4 @@
                 # HSIC_loss = lambd*(HSIC_loss1+HSIC_loss2)
 
 # ^(?=.*\bcartoon\b)(?=.*\bsketch\b).*$
+#edit
