@@ -37,7 +37,8 @@ from datetime import datetime
 
 
 if __name__=='__main__':
-    a_file = open("PACS.pkl", "rb")
+    path=""
+    a_file = open("../Data/PACS.pkl", "rb")
     full_dict = pickle.load(a_file)
 
     all_domain_names = ['photo', 'art_painting', 'cartoon', 'sketch']
