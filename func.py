@@ -81,10 +81,9 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_l
         for i, data in enumerate(train_loader, 0):
 
             inputs, labels = data
-
             optimizer.zero_grad()
 
-            outputs = [net(input) for input in inputs]
+            outputs = [net(i) for i in inputs]
 
             basic_loss = sum([criterion(output, labels) for output in outputs])
             # zero the parameter gradients

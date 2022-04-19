@@ -1,1 +1,1 @@
-{"HSIC": NaN, "_timestamp": 1650375004, "_runtime": 93, "_step": 5, "Training loss": 3.4495294094085693, "Validation loss": 141.17555236816406, "Acc": 7}
+{"HSIC": NaN, "_timestamp": 1650375137, "_runtime": 226, "_step": 13, "Training loss": 33.5181770324707, "Validation loss": 467.7899475097656, "Acc": 13}
