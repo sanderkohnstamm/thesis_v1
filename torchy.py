@@ -22,9 +22,8 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         'Generates one sample of data'
         # Select sample and label
-        X = [d[index] for d in self.data_list]
+        X = [d[index][0] for d in self.data_list]
         y = self.labels[index]
-
         return X, y
 
 class AddDomain(torch.utils.data.Dataset):

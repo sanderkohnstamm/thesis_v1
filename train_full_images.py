@@ -74,11 +74,10 @@ if __name__=='__main__':
 
 
 
-    train_names = ['photo', 'cartoon']
+    train_names = ['photo']
     valid_name = ['art_painting']
     test_name = 'split'
 
-    net = torchy.Net()
     lr=0.001
     use_hsic = True
     batch_size = 128
@@ -86,18 +85,18 @@ if __name__=='__main__':
     for gamma in [2.5]:
         print('Lambda: ', gamma)
         for i in range(20):
-            # wandb.init(project="test-one",
-            #             entity="skohnie",
-            #             name=f'{gamma}/{i}',
-            #             config = {"learning_rate": lr,
-            #                         "epochs": 100,
-            #                         "batch_size": 128,
-            #                         "gamma": gamma,
-            #                         "Train names": train_names,
-            #                         "Valid name": valid_name,
-            #                         "Test name": test_name
-            #                         }
-            #         )
+            wandb.init(project="test-one",
+                        entity="skohnie",
+                        name=f'{gamma}/{i}',
+                        config = {"learning_rate": lr,
+                                    "epochs": 100,
+                                    "batch_size": 128,
+                                    "gamma": gamma,
+                                    "Train names": train_names,
+                                    "Valid name": valid_name,
+                                    "Test name": test_name
+                                    }
+                    )
 
 
 
@@ -109,14 +108,15 @@ if __name__=='__main__':
                                                                                 verbose=True)
 
 
-            net = torchy.Net()
+            resnet18 = models.resnet18(pretrained=True)
+            resnet18.fc1 = nn.Linear(512, 7)
 
             min_valid_loss = 1000
 
 
 
-            optimizer = optim.Adam(net.parameters(), lr=lr)
-            min_valid_loss = func.train(net, criterion, optimizer, 
+            optimizer = optim.Adam(resnet18.parameters(), lr=lr)
+            min_valid_loss = func.train(resnet18, criterion, optimizer, 
                                         train_loader,
                                         valid_loader=valid_loader,
                                         epochs=30,

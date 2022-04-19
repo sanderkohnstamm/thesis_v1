@@ -1,0 +1,22 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.9.7",
+    "heartbeatAt": "2022-04-19T13:13:59.738041",
+    "startedAt": "2022-04-19T13:13:55.329906",
+    "docker": null,
+    "cpu_count": 12,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/sanderkohnstamm/Desktop/Thesis/Code_git/thesis/train_full_images.py",
+    "codePath": "train_full_images.py",
+    "git": {
+        "remote": "https://github.com/sanderkohnstamm/thesis",
+        "commit": "defa9576517c85eb69cdea1b5436ace61d9e728d"
+    },
+    "email": "sanderkohnstamm@gmail.com",
+    "root": "/Users/sanderkohnstamm/Desktop/Thesis/Code_git/thesis",
+    "host": "MBP-van-Sander",
+    "username": "root",
+    "executable": "/opt/anaconda3/envs/thesis/bin/python"
+}

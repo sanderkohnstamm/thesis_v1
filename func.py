@@ -28,7 +28,7 @@ def bootstrap(datasets, domain_names):
         domain_targets = np.array(datasets[d].targets)
         for j, class_key in enumerate(classes):
             bools = domain_targets==class_key
-            idx = np.cumsum(np.ones(domain_targets.shape[0]))[bools]-1
+            idx = (np.cumsum(np.ones(domain_targets.shape[0]))[bools]-1).astype(int)
             data_subset = Subset(datasets[d], idx)
             if len(data_subset) == max_sizes[j]:
                 domain_list.append(data_subset)
@@ -84,7 +84,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_l
 
             optimizer.zero_grad()
 
-            outputs = [net(input)[1] for input in inputs]
+            outputs = [net(input) for input in inputs]
 
             basic_loss = sum([criterion(output, labels) for output in outputs])
             # zero the parameter gradients
@@ -125,15 +125,15 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_l
                 for data, labels in valid_loader:
                     if len(data)>1:
                         data1, data2 = data
-                        _, val_out1 = net(data1)
-                        _, val_out2 = net(data2)
+                        val_out1 = net(data1)
+                        val_out2 = net(data2)
                         _, predicted1 = torch.max(val_out1.data, 1)
                         _, predicted2 = torch.max(val_out2.data, 1)
                         correct += (predicted1 == labels).sum().item() + (predicted2 == labels).sum().item()
                         loss = criterion(val_out1,labels) + criterion(val_out2,labels)
 
                     else:
-                        _, val_out = net(data[0])
+                        val_out = net(data[0])
                         _, predicted = torch.max(val_out.data, 1)
                         correct += (predicted == labels).sum().item()
                         loss = criterion(val_out,labels)
@@ -175,7 +175,7 @@ def test_model(test_loader, path='saved_model.pth'):
         for data in test_loader:
             features, labels = data
             # calculate outputs by running images through the network
-            _, outputs = test_net(features[0])
+            outputs = test_net(features[0])
             # the class with the highest energy is what we choose as prediction
             _, predicted = torch.max(outputs.data, 1)
 
