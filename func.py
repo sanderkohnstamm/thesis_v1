@@ -1,7 +1,7 @@
 import torch
-import torchy
+import thesis.torchy as torchy
 from torch.utils.data import Subset, ConcatDataset
-import HSIC
+import thesis.HSIC as HSIC
 from collections import Counter
 
 import numpy as np

@@ -2,9 +2,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import func
+import thesis.func as func
 
-import torchy
 import math
 from torch.utils.data import DataLoader, random_split
 
@@ -74,7 +73,7 @@ def get_feature_loaders(data_dict, batch_size, train_names, valid_name=None, tes
         if verbose: print(f'Validation on {valid_name}')
         train = dataset
         data, l = func.dict_to_data(data_dict, valid_name) 
-        val = torchy.Dataset(data, l)
+        val = Dataset(data, l)
     else:
         if verbose: print('No validation')
         val =  None
@@ -88,7 +87,7 @@ def get_feature_loaders(data_dict, batch_size, train_names, valid_name=None, tes
     elif test_name:
         if verbose: print(f'Testing on {test_name}')
         data, l = func.dict_to_data(data_dict, test_name) 
-        test = torchy.Dataset(data, l)
+        test = Dataset(data, l)
     else:
         if verbose: print('No testing')
         test =  None
@@ -97,8 +96,6 @@ def get_feature_loaders(data_dict, batch_size, train_names, valid_name=None, tes
 
     datasets = [train, val, test]
     train_loader, valid_loader, test_loader = [DataLoader(d, batch_size=batch_size, shuffle=True, num_workers=0) if d else d for d in datasets]
-
-
 
     return train_loader, valid_loader, test_loader
 
@@ -120,7 +117,7 @@ def get_image_loaders(datasets, batch_size, train_names, valid_name=None, test_n
         if verbose: print(f'Validation on {valid_name}')
         train = dataset
         data, l = func.bootstrap(datasets, valid_name)
-        val = torchy.Dataset(data, l)
+        val = Dataset(data, l)
     else:
         if verbose: print('No validation')
         val =  None
@@ -134,7 +131,7 @@ def get_image_loaders(datasets, batch_size, train_names, valid_name=None, test_n
     elif test_name:
         if verbose: print(f'Testing on {test_name}')
         data, l = func.bootstrap(datasets, test_name)
-        test = torchy.Dataset(data, l)
+        test = Dataset(data, l)
     else:
         if verbose: print('No testing')
         test =  None
