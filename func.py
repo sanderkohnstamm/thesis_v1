@@ -1,5 +1,5 @@
 import torch
-import thesis.torchy as torchy
+# import thesis.torchy as torchy
 from torch.utils.data import Subset, ConcatDataset
 import thesis.HSIC as HSIC
 from collections import Counter
@@ -169,12 +169,12 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
     return min_valid_loss
     
 
-def test_model(test_loader, path='saved_model.pth'):
+def test_model(test_net, test_loader, path='saved_model.pth'):
     
     correct = 0
     total = 0
 
-    test_net = torchy.Net()
+    # test_net = torchy.Net()
     test_net.load_state_dict(torch.load(path))
 
     test_predictions = []
