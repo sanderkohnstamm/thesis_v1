@@ -34,7 +34,7 @@ def bootstrap(datasets, domain_names):
                 domain_list.append(data_subset)
             else:
                 sampled_idx = np.random.choice(idx, size=max_sizes[j])
-                domain_list.append(Subset(data_subset, sampled_idx))
+                domain_list.append(Subset(datasets[d], sampled_idx))
 
         data_list.append(ConcatDataset(domain_list))
         
@@ -110,6 +110,10 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_l
             if wb:
                 wandb.log({"HSIC": HSIC_loss})
                 wandb.log({"Training loss": basic_loss})
+                
+            if verbose:
+                print("HSIC:", HSIC_loss)
+                print("Training loss:", basic_loss)
 
             if writer:
                 writer.add_scalar('HSIC', HSIC_loss, epoch*len(train_loader)+i)

@@ -1,4 +1,5 @@
 from __future__ import print_function, division
+from tabnanny import verbose
 
 import torch
 import torch.nn as nn
@@ -74,8 +75,8 @@ if __name__=='__main__':
 
 
 
-    train_names = ['photo']
-    valid_name = ['art_painting']
+    train_names = ['photo', 'art_painting']
+    valid_name = ['cartoon']
     test_name = 'split'
 
     lr=0.001
@@ -124,7 +125,8 @@ if __name__=='__main__':
                                         gamma=gamma,
                                         writer=None,
                                         min_valid_loss = min_valid_loss,
-                                        wb=True)
+                                        wb=True,
+                                        verbose=True)
 
             acc = func.test_model(test_loader, 'saved_model.pth')
             wandb.summary['Test Accuracy'] = acc
