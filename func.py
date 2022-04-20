@@ -80,7 +80,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
     if wb: wandb.watch(net)
 
     for epoch in range(epochs):  # loop over the dataset multiple times
-        
+
         if verbose: print(f'Epoch {epoch}')
 
         train_loss = 0.0
@@ -173,7 +173,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
     return min_valid_loss
     
 
-def test_model(test_net, test_loader, path='saved_model.pth'):
+def test_model(test_net, test_loader, path='saved_model.pth', verbose=False):
     
     correct = 0
     total = 0
@@ -198,5 +198,6 @@ def test_model(test_net, test_loader, path='saved_model.pth'):
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
-#     print(f'Accuracy of the network on the {len(test_loader)*BATCH_SIZE} test images: {100 * correct // total} %')
+    if verbose: print(f'Accuracy of the network on the {len(test_loader)*BATCH_SIZE} test images: {100 * correct // total} %')
+
     return test_predictions, test_targets, (100 * correct // total)
