@@ -131,7 +131,8 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                 correct = 0
                 total = 0
                 for data, labels in valid_loader:
-                    data, labels = data.to(device), labels.to(device)
+                    data, labels = data, labels.to(device)
+                    data = [d.to(device) for d in data]
                     if len(data)>1:
                         data1, data2 = data
                         val_out1 = net(data1)
