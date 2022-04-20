@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 from tabnanny import verbose
 
+import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
@@ -24,7 +25,7 @@ from datetime import datetime
 
 
 if __name__=='__main__':
-    data_root = "../../Data/PACS/"
+    data_root = "../../Homework3-PACS/PACS/"
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
