@@ -69,9 +69,11 @@ def dict_to_data(feature_dict, domain_names):
     return data_list, labels
 
 
-def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_loader=None, 
+def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device='cpu', valid_loader=None, 
                         use_hsic=False, writer=False, min_valid_loss=1000, verbose=False, wb=False):
 
+
+    net.to(device)
     if verbose: print(f'Using HSIC:{use_hsic}')
     
     if wb: wandb.watch(net)
@@ -82,6 +84,8 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_l
         for i, data in enumerate(train_loader, 0):
 
             inputs, labels = data
+            inputs, labels = inputs.to(device), labels.to(device)
+
             optimizer.zero_grad()
 
             outputs = [net(i) for i in inputs]
@@ -127,6 +131,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_l
                 correct = 0
                 total = 0
                 for data, labels in valid_loader:
+                    data, labels = data.to(device), labels.to(device)
                     if len(data)>1:
                         data1, data2 = data
                         val_out1 = net(data1)

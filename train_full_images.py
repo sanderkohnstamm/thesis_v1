@@ -8,6 +8,8 @@ import torch.backends.cudnn as cudnn
 from torchvision import models, transforms
 import os
 
+
+
 cudnn.benchmark = True
 
 import numpy as np
@@ -24,6 +26,7 @@ from datetime import datetime
 if __name__=='__main__':
     data_root = "../../Data/PACS/"
 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     all_domain_names = ['photo', 'art_painting', 'cartoon', 'sketch']
     domain_names = ['photo', 'art_painting', 'cartoon']
@@ -106,6 +109,7 @@ if __name__=='__main__':
                                         epochs=30,
                                         use_hsic=use_hsic,
                                         gamma=gamma,
+                                        device=device,
                                         writer=None,
                                         min_valid_loss = min_valid_loss,
                                         wb=True,
