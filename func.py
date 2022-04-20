@@ -163,7 +163,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                 if writer:
                     writer.add_scalar('Validation loss', valid_loss/len(valid_loader), epoch*len(train_loader)+i)
                 if min_valid_loss > valid_loss:
-                    # print(f'Validation Loss Decreased({min_valid_loss:.6f}--->{valid_loss:.6f}) \t Saving The Model')
+                    if verbose: print(f'Validation Loss Decreased({min_valid_loss:.6f}--->{valid_loss:.6f}) \t Saving The Model')
                     min_valid_loss = valid_loss
                     # Saving State Dict
                     torch.save(net.state_dict(), 'saved_model.pth')   
