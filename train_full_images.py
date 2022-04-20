@@ -1,32 +1,15 @@
 from __future__ import print_function, division
 from tabnanny import verbose
 
-import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.optim import lr_scheduler
 import torch.backends.cudnn as cudnn
-from torch.utils.data import Subset, ChainDataset, DataLoader, random_split
-import torch.nn.functional as F
 
-import numpy as np
-import torchvision
-from torchvision import datasets, models, transforms
-import matplotlib.pyplot as plt
-import time
+from torchvision import models, transforms
 import os
-import copy
-
 
 cudnn.benchmark = True
 
-import pandas as pd
-import pickle
-import math
-import random
-
-import HSIC
-import matplotlib.pyplot as plt
 import numpy as np
 import func
 import torchy

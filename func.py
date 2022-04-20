@@ -6,7 +6,6 @@ from collections import Counter
 
 import numpy as np
 import wandb
-from torch.utils.tensorboard import SummaryWriter
 
 
 def bootstrap(datasets, domain_names):
@@ -40,6 +39,7 @@ def bootstrap(datasets, domain_names):
         
     return data_list, labels        
 
+
 def dict_to_data(feature_dict, domain_names):
     data_list = []
 
@@ -67,6 +67,7 @@ def dict_to_data(feature_dict, domain_names):
         data_list.append(torch.vstack(domain_list))
         
     return data_list, labels
+
 
 def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_loader=None, 
                         use_hsic=False, writer=False, min_valid_loss=1000, verbose=False, wb=False):
@@ -110,7 +111,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5, valid_l
             if wb:
                 wandb.log({"HSIC": HSIC_loss})
                 wandb.log({"Training loss": basic_loss})
-                
+
             if verbose:
                 print("HSIC:", HSIC_loss)
                 print("Training loss:", basic_loss)

@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import func
-import random
+
 import torchy
 import math
 from torch.utils.data import DataLoader, random_split
