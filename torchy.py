@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import thesis.func as func
+import func
 
 import math
 from torch.utils.data import DataLoader, random_split
@@ -62,7 +62,7 @@ class Net(nn.Module):
 def get_feature_loaders(data_dict, batch_size, train_names, valid_name=None, test_name=None, verbose=True):
 
     data, l = func.dict_to_data(data_dict, train_names) 
-    dataset = torchy.Dataset(data, l)
+    dataset = Dataset(data, l)
     if verbose: print(f'Training on {train_names}')
     # Get validation
     if valid_name=='split':
@@ -106,7 +106,7 @@ def get_image_loaders(datasets, batch_size, train_names, valid_name=None, test_n
     
     
     data, l = func.bootstrap(datasets, train_names)
-    dataset = torchy.Dataset(data, l)
+    dataset = Dataset(data, l)
     if verbose: print(f'Training on {train_names}')
     # Get validation
     if valid_name=='split':
