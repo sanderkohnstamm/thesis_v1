@@ -74,11 +74,14 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
 
 
     net.to(device)
-    if verbose: print(f'Using HSIC:{use_hsic}')
-    
+    if verbose: 
+        print(f'Using HSIC:{use_hsic}')
+        print(f'Cuda:{device}')
     if wb: wandb.watch(net)
 
     for epoch in range(epochs):  # loop over the dataset multiple times
+        
+        if verbose: print(f'Epoch {epoch}')
 
         train_loss = 0.0
         for i, data in enumerate(train_loader, 0):
