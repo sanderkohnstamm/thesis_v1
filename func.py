@@ -198,6 +198,6 @@ def test_model(test_net, test_loader, path='saved_model.pth', verbose=False):
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
-    if verbose: print(f'Accuracy of the network on the {len(test_loader)*BATCH_SIZE} test images: {100 * correct // total} %')
+    if verbose: print(f'Accuracy of the network on the {len(correct)} test images: {100 * correct // total} %')
 
     return test_predictions, test_targets, (100 * correct // total)
