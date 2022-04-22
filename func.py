@@ -159,7 +159,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                 # print(f'Epoch {epoch+1} \t\t Training Loss: {train_loss / len(trainloaders[0])} \t\t Validation Loss: {valid_loss / len(validate_loader)}')
                 if wb:
                     wandb.log({'Validation loss': valid_loss/len(valid_loader)})
-                    wandb.log({'Acc': acc})
+                    wandb.log({'Validation accuracy': acc})
                 if writer:
                     writer.add_scalar('Validation loss', valid_loss/len(valid_loader), epoch*len(train_loader)+i)
                 if min_valid_loss > valid_loss:
