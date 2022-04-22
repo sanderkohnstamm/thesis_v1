@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 
-from torchvision import models, transforms
+from torchvision import models, transforms, datasets
 import os
 
 
@@ -25,7 +25,7 @@ from datetime import datetime
 
 
 if __name__=='__main__':
-    data_root = "../../Homework3-PACS/PACS/"
+    data_root = "../../Data/PACS/"
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -47,7 +47,7 @@ if __name__=='__main__':
     for name in os.listdir(data_root):
     
         if not name[0] == '.':
-            dataset = torchvision.datasets.ImageFolder(data_root+name, transform=transf)
+            dataset = datasets.ImageFolder(data_root+name, transform=transf)
 
             datasets[name] = dataset
             print(f"Added :{name}, length: {len(datasets[name])}")
@@ -70,21 +70,29 @@ if __name__=='__main__':
     use_hsic = True
     batch_size = 128
     epochs = 30
-    for gamma in [2.5]:
-        print('Lambda: ', gamma)
-        for i in range(20):
-            wandb.init(project="test-one",
-                        entity="skohnie",
-                        name=f'{gamma}/{i}',
-                        config = {"learning_rate": lr,
-                                    "epochs": 100,
-                                    "batch_size": 128,
-                                    "gamma": gamma,
-                                    "Train names": train_names,
-                                    "Valid name": valid_name,
-                                    "Test name": test_name
-                                    }
-                    )
+    verbose = True
+    now = datetime.now()
+    wandb_ = False
+
+    for gamma in [0]:
+        print('gamma: ', gamma)
+        for i in range(1):
+            print(i)
+            
+            current_time = now.strftime("%H_%M_%S")
+            if wandb_:
+                wandb.init(project=f"colab_runs",
+                            entity="skohnie",
+                            name=f'{current_time}/{gamma}/{i}',
+                            config = {"learning_rate": lr,
+                                        "epochs": epochs,
+                                        "batch_size": batch_size,
+                                        "gamma": gamma,
+                                        "Train names": train_names,
+                                        "Valid name": valid_name,
+                                        "Test name": test_name
+                                        }
+                        )
 
 
 
@@ -93,10 +101,11 @@ if __name__=='__main__':
                                                                                 train_names,
                                                                                 valid_name,
                                                                                 test_name,
-                                                                                verbose=True)
+                                                                                verbose=verbose)
 
 
             resnet18 = models.resnet18(pretrained=True)
+            
             resnet18.fc1 = nn.Linear(512, 7)
 
             min_valid_loss = 1000
@@ -107,15 +116,18 @@ if __name__=='__main__':
             min_valid_loss = func.train(resnet18, criterion, optimizer, 
                                         train_loader,
                                         valid_loader=valid_loader,
-                                        epochs=30,
+                                        epochs=epochs,
                                         use_hsic=use_hsic,
                                         gamma=gamma,
                                         device=device,
                                         writer=None,
                                         min_valid_loss = min_valid_loss,
-                                        wb=True,
-                                        verbose=True)
+                                        wb=wandb_,
+                                        verbose=verbose)
 
             acc = func.test_model(test_loader, 'saved_model.pth')
-            wandb.summary['Test Accuracy'] = acc
-            wandb.finish()
+            if verbose: print('Accuracy: ', acc)
+
+            if wandb_:
+                wandb.summary['Test Accuracy'] = acc
+                wandb.finish()
