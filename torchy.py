@@ -62,7 +62,7 @@ class Net(nn.Module):
 
 
 # from https://discuss.pytorch.org/t/how-can-i-replace-the-forward-method-of-a-predefined-torchvision-model-with-my-customized-forward-function/54224/7
-class MyCustomResnet18(nn.Module):
+class CustomNet(nn.Module):
     def __init__(self, original):
         super().__init__()
         
@@ -84,7 +84,7 @@ class MyCustomResnet18(nn.Module):
         self.fc0 = nn.Linear(in_features, 256)
         self.fc0_bn = nn.BatchNorm1d(256, eps = 1e-2)
         self.fc1 = nn.Linear(256, 7)
-        self.fc1_bn = nn.BatchNorm1d(256, eps = 1e-2)
+        self.fc1_bn = nn.BatchNorm1d(7, eps = 1e-2)
         
         # initialize all fc layers to xavier
         for m in self.modules():
