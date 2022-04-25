@@ -124,10 +124,6 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                 print("HSIC:", HSIC_loss)
                 print("Training loss:", basic_loss)
 
-            if writer:
-                writer.add_scalar('HSIC', HSIC_loss, epoch*len(train_loader)+i)
-                writer.add_scalar('Training loss', basic_loss, epoch*len(train_loader)+i)
-
             if valid_loader:
 
                 valid_loss = 0.0
@@ -136,12 +132,14 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                 total = 0
                 for data, labels in valid_loader:
                     data, labels = data, labels.to(device)
+
                     data = [d.to(device) for d in data]
-                    
+
                     val_outputs = [net(d) for d in data]
                     predicted = [torch.max(val_out.data, 1) for _, val_out in val_outputs]
-                    correct = sum([(pred == labels).sum().item() for pred in predicted])
-                    loss = sum([criterion(val_out,labels) for val_out in val_outputs])
+
+                    correct = sum([(pred.indices == labels).sum().item() for pred in predicted])
+                    loss = sum([criterion(val_out,labels) for _, val_out in val_outputs])
 
                         
                     valid_loss = loss.item() * data[0].size(0) 
@@ -149,12 +147,10 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                     total += labels.size(0)
                     
                     acc = (100 * correct // total)
-                # print(f'Epoch {epoch+1} \t\t Training Loss: {train_loss / len(trainloaders[0])} \t\t Validation Loss: {valid_loss / len(validate_loader)}')
+
                 if wb:
                     wandb.log({'Validation loss': valid_loss/len(valid_loader)})
                     wandb.log({'Validation accuracy': acc})
-                if writer:
-                    writer.add_scalar('Validation loss', valid_loss/len(valid_loader), epoch*len(train_loader)+i)
                 if min_valid_loss > valid_loss:
                     if verbose: print(f'Validation Loss Decreased({min_valid_loss:.6f}--->{valid_loss:.6f}) \t Saving The Model')
                     min_valid_loss = valid_loss
