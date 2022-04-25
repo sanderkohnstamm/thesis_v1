@@ -93,11 +93,12 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
 
             outputs = [net(i.to(device)) for i in inputs]
 
-            basic_loss = sum([criterion(output, labels) for output in outputs])
+            basic_loss = sum([criterion(output, labels) for _, output in outputs])
             # zero the parameter gradients
             
             if len(inputs)==2: 
-                HSIC_loss = HSIC.hsic_normalized(outputs[0], outputs[1])
+                emb1, emb2 = [emb for emb, _ in outputs]
+                HSIC_loss = HSIC.hsic_normalized(emb1, emb2)
             else: 
                 HSIC_loss = np.NaN
 
@@ -136,20 +137,12 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                 for data, labels in valid_loader:
                     data, labels = data, labels.to(device)
                     data = [d.to(device) for d in data]
-                    if len(data)>1:
-                        data1, data2 = data
-                        val_out1 = net(data1)
-                        val_out2 = net(data2)
-                        _, predicted1 = torch.max(val_out1.data, 1)
-                        _, predicted2 = torch.max(val_out2.data, 1)
-                        correct += (predicted1 == labels).sum().item() + (predicted2 == labels).sum().item()
-                        loss = criterion(val_out1,labels) + criterion(val_out2,labels)
+                    
+                    val_outputs = [net(d) for d in data]
+                    predicted = [torch.max(val_out.data, 1) for _, val_out in val_outputs]
+                    correct = sum([(pred == labels).sum().item() for pred in predicted])
+                    loss = sum([criterion(val_out,labels) for val_out in val_outputs])
 
-                    else:
-                        val_out = net(data[0])
-                        _, predicted = torch.max(val_out.data, 1)
-                        correct += (predicted == labels).sum().item()
-                        loss = criterion(val_out,labels)
                         
                     valid_loss = loss.item() * data[0].size(0) 
 
