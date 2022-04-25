@@ -162,13 +162,14 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
     return min_valid_loss
     
 
-def test_model(test_net, test_loader, path='saved_model.pth', verbose=False):
+def test_model(test_net, test_loader, path='saved_model.pth', verbose=False, device='cpu'):
     
     correct = 0
     total = 0
 
     # test_net = torchy.Net()
-    test_net.load_state_dict(torch.load(path))
+
+    test_net.load_state_dict(torch.load(path, map_location=torch.device(device)))
 
     test_predictions = []
     test_targets = []
@@ -177,7 +178,7 @@ def test_model(test_net, test_loader, path='saved_model.pth', verbose=False):
         for data, labels in test_loader:
             
             # calculate outputs by running images through the network
-            outputs = test_net(data)
+            outputs = test_net(data.to(device))
             # the class with the highest energy is what we choose as prediction
             _, predicted = torch.max(outputs[1].data, 1)
 
