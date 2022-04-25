@@ -175,11 +175,11 @@ def test_model(test_net, test_loader, path='saved_model.pth', verbose=False):
 
     with torch.no_grad():
         for data, labels in test_loader:
-
+            
             # calculate outputs by running images through the network
-            outputs = test_net(data[1])
+            outputs = test_net(data)
             # the class with the highest energy is what we choose as prediction
-            _, predicted = torch.max(outputs.data, 1)
+            _, predicted = torch.max(outputs[1].data, 1)
 
             test_predictions.extend(predicted.detach().cpu().tolist())
             test_targets.extend(labels.detach().cpu().tolist())
