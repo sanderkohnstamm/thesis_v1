@@ -63,14 +63,13 @@ class Net(nn.Module):
 
 # from https://discuss.pytorch.org/t/how-can-i-replace-the-forward-method-of-a-predefined-torchvision-model-with-my-customized-forward-function/54224/7
 class MyCustomResnet18(nn.Module):
-    def __init__(self, pretrained=True):
+    def __init__(self, original):
         super().__init__()
         
-        resnet18 = models.resnet18(pretrained=pretrained)
         # here we get all the modules(layers) before the fc layer at the end
         # note that currently at pytorch 1.0 the named_children() is not supported
         # and using that instead of children() will fail with an error
-        self.features = nn.ModuleList(resnet18.children())[:-1]
+        self.features = nn.ModuleList(original.children())[:-1]
         # Now we have our layers up to the fc layer, but we are not finished yet 
         # we need to feed these to nn.Sequential() as well, this is needed because,
         # nn.ModuleList doesnt implement forward() 
@@ -79,7 +78,7 @@ class MyCustomResnet18(nn.Module):
         # unpack all the items and send them like this
         self.features = nn.Sequential(*self.features)
         # now lets add our new layers 
-        in_features = resnet18.fc.in_features
+        in_features = original.fc.in_features
         # from now, you can add any kind of layers in any quantity!  
         # Here I'm creating two new layers 
         self.fc0 = nn.Linear(in_features, 256)
