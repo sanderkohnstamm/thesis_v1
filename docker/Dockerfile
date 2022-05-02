@@ -49,4 +49,4 @@ RUN conda install -c conda-forge jupyterlab
 RUN conda install -c conda-forge jupytext
 RUN jupyter labextension install jupyterlab-jupytext
 # CMD ["python", "Train Full.ipynb"]
-# EXPOSE 22
+EXPOSE 22
