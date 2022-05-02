@@ -7,11 +7,23 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
+
+# Install ssh server, used by IDE for remote execution
+# Mount "/home/$USER/.ssh:/root/.ssh" to get access
+
+RUN apt-get update && apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN echo 'root:routemein' |chpasswd
+RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+RUN mkdir /root/.ssh
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
 # Install pip requirements
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
-
-
 
 # Install all apt-get packages. Merendeel nodig voor anaconda
 RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
@@ -31,21 +43,10 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
 RUN conda install pytorch torchvision torchaudio -c pytorch
 RUN conda install nodejs
 
-WORKDIR /app
-COPY . /app
-
-# # Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-# RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
-# USER appuser
-
-# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-
 RUN pip install bs4 lxml openpyxl
 RUN pip install -U jupyter
 RUN conda install -c conda-forge jupyterlab
 RUN conda install -c conda-forge jupytext
 RUN jupyter labextension install jupyterlab-jupytext
 CMD ["python", "Train Full.ipynb"]
-EXPOSE 3000
-
+EXPOSE 22
