@@ -6,3 +6,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    volumes:
+      # Map in authorized keys to enable logging in over SSH using PyCharm
+      - $HOME/.ssh/authorized_keys:/root/.ssh/authorized_keys
+    ports:
+      - "yyyy:22"
+    
+
+
+

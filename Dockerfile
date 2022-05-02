@@ -19,11 +19,11 @@ RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN mkdir /root/.ssh
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+CMD [ "/usr/sbin/sshd" , "-D" ]
 
-
-# Install pip requirements
-COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+# # Install pip requirements
+# COPY requirements.txt .
+# RUN python -m pip install -r requirements.txt
 
 # Install all apt-get packages. Merendeel nodig voor anaconda
 RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
@@ -48,5 +48,5 @@ RUN pip install -U jupyter
 RUN conda install -c conda-forge jupyterlab
 RUN conda install -c conda-forge jupytext
 RUN jupyter labextension install jupyterlab-jupytext
-CMD ["python", "Train Full.ipynb"]
-EXPOSE 22
+# CMD ["python", "Train Full.ipynb"]
+# EXPOSE 22
