@@ -1,17 +1,22 @@
-version: '3.4'
-
 services:
-  thesis:
-    image: thesis-docker
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    volumes:
-      # Map in authorized keys to enable logging in over SSH using PyCharm
-      - $HOME/.ssh/authorized_keys:/root/.ssh/authorized_keys
+  sander:
+    runtime: nvidia
+    command: /gitlab/python_basic/deep_learning/dl_machine_tools/run_jupyter_lab.sh
+    image: gitlab-dv.tno.nl:4567/intelligent_imaging/python_basic/deep_learning
     ports:
-      - "9000:22"
-    
-
+     - $PORT:9007
+    environment:
+    - LD_LIBRARY_PATH=/usr/local/lib:/usr/local/cuda/lib64/stubs/
+    - XDG_DATA_HOME=$HOME
+    - XDG_CONFIG_HOME=$HOME/.config
+    - HOME=$HOME
+    - USER=$USER
+    - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+    - /data/$USER/gitlab:/gitlab
+    - /usr/local/certificates:/certificates
+    - $HOME:$HOME
+    - $PWD:/project
+version: '2.3'
 
 
