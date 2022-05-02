@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   thesis:
-    image: thesis
+    image: thesis-docker
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -10,7 +10,7 @@ services:
       # Map in authorized keys to enable logging in over SSH using PyCharm
       - $HOME/.ssh/authorized_keys:/root/.ssh/authorized_keys
     ports:
-      - "yyyy:22"
+      - "9000:22"
     
 
 
