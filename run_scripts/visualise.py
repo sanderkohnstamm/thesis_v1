@@ -8,8 +8,8 @@ import pickle
 
 import matplotlib.pyplot as plt
 import numpy as np
-import func
-import torchy
+import utils.func as func
+import utils.torchy as torchy
 
 
 

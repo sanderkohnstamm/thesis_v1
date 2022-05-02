@@ -8,8 +8,8 @@ import torch.backends.cudnn as cudnn
 cudnn.benchmark = True
 
 import pickle
-import func
-import torchy
+import utils.func as func
+import utils.torchy as torchy
 
 import wandb
 

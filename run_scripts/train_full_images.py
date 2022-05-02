@@ -14,8 +14,8 @@ import os
 cudnn.benchmark = True
 
 import numpy as np
-import func
-import torchy
+import utils.func as func
+import utils.torchy as torchy
 
 import wandb
 

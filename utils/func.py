@@ -155,7 +155,7 @@ def train(net, criterion, optimizer, train_loader, epochs=20, gamma=0.5,  device
                     if verbose: print(f'Validation Loss Decreased({min_valid_loss:.6f}--->{valid_loss:.6f}) \t Saving The Model')
                     min_valid_loss = valid_loss
                     # Saving State Dict
-                    torch.save(net.state_dict(), 'saved_model.pth')   
+                    torch.save(net.state_dict(), 'models/saved_model.pth')   
     
         if verbose: print(train_loss)
     if verbose: print('Finished Training')
