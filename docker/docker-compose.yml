@@ -12,7 +12,7 @@ services:
       - XDG_CONFIG_HOME=$HOME/.config
       - HOME=$HOME
       - USER=$USER
-      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_DEVICES=0
     volumes:
       # Map in authorized keys to enable logging in over SSH using PyCharm
       - $HOME/.ssh/authorized_keys:/root/.ssh/authorized_keys
