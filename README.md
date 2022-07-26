@@ -1,5 +1,5 @@
 # Thesis
-Moved to TNO internal gitlab, will publish againonce finished
+Moved to TNO internal gitlab, will publish again once finished
 
 Invariant Domain Adaptation graduation project
 
